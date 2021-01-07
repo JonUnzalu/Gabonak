@@ -391,12 +391,15 @@ public class MainMenu {
 
             Bson filter1 = eq("student_id", inputStudent);
             Bson filter2 = eq("class_id", inputClass);
-            Bson filterNew = eq("class_id", inputNewClass);
 
-            collection.updateOne(Filters.and(filter1, filter2), filterNew);
+            List<Score> newScores = collection.find(Filters.and(filter1, filter2)).first().getScores(); //scoreak hartu
+            StudentClass toAdd = new StudentClass(inputStudent, inputNewClass, newScores);
+            collection.replaceOne(Filters.and(filter1, filter2), toAdd);
 
         } catch (InputMismatchException ime) {
             System.out.println("You have to enter a number");
+        } catch(IllegalArgumentException ie){
+            System.out.println("Lol");
         }
     }
 }
